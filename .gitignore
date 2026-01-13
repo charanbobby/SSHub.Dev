@@ -1,0 +1,9 @@
+# Sensitive files
+id_hetzner_temp
+monitor_conf_temp.conf
+*.log
+.env
+
+# Windows specific
+Thumb.db
+desktop.ini
