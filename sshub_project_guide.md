@@ -269,7 +269,7 @@ sudo nano /opt/uptime-kuma/docker-compose.yml
 ```yaml
 services:
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:2
     restart: always
     ports:
       - "127.0.0.1:3001:3001"
