@@ -168,9 +168,7 @@ sudo certbot --nginx -d shopify.sshub.dev
 
 ## Project 3: Fullstack Projects (Infrastructure & Cyber)
 
-
-
-### 2. Cybersecurity: Fail2Ban
+### 1. Cybersecurity: Fail2Ban
 Protect your SSH and Nginx from brute force.
 
 ```bash
@@ -187,7 +185,7 @@ sudo nano /etc/fail2ban/jail.local
 
 Restart: `sudo systemctl restart fail2ban`
 
-### 3. Fun Project: "Honeypot" Directory
+### 2. Fun Project: "Honeypot" Directory
 Create a fake admin login page to see who scans your server.
 *   Create `/var/www/html/admin/index.html` with a fake login form.
 *   Monitor your Nginx access logs (`/var/log/nginx/access.log`) to see bots trying to POST data to it.
@@ -499,10 +497,150 @@ server {
 | :--- | :--- | :--- |
 | **n8n** | `n8n.sshub.dev` | Automation Workflows |
 | **Trilium** | `notes.sshub.dev` | Knowledge Base |
-
 | **Uptime Kuma** | `status.sshub.dev` | Uptime Monitoring |
 | **Glances** | `monitor.sshub.dev` | System Stats |
 | **Portainer** | `portainer.sshub.dev` | Docker Management |
 | **Zoom Redirect** | `meet.sshub.dev` | Utility Shortlink |
 | **Shopify** | `shopify.sshub.dev` | Redirect to Dev Store |
 
+---
+
+## Project 5: Moltbot (Telegram AI Assistant)
+**Goal:** Run Moltbot as a self-hosted AI assistant with Telegram integration, isolated via Docker.
+
+Moltbot will:
+*   Listen to Telegram messages via a bot token.
+*   Run fully containerized.
+*   Not require public HTTP exposure unless you explicitly want the control UI.
+*   Use pairing approval to prevent unauthorized access.
+
+*(This fits the non-critical, experimentation-friendly nature of sshub.dev)*
+
+### 1. Telegram Bot Setup (External)
+1.  Open Telegram and start **@BotFather**.
+2.  Run `/newbot`.
+3.  Choose a name and username.
+4.  Copy the **Bot Token** (keep it secret).
+
+*Optional (for group chats):*
+1.  Run `/setprivacy`.
+2.  Disable privacy mode.
+
+### 2. Docker Setup
+We will follow the official Moltbot Docker flow and align it with your `/opt/<app>` convention.
+
+```bash
+cd /opt
+sudo git clone https://github.com/moltbot/moltbot.git
+sudo chown -R $USER:$USER moltbot
+cd moltbot
+
+# Run the official setup script (do NOT use sudo)
+./docker-setup.sh
+```
+
+This will:
+*   Build Moltbot images.
+*   Generate a `.env` file.
+*   Create a gateway token.
+*   Start required services via Docker Compose.
+*   Expose the Control UI **only on localhost** (`http://127.0.0.1:18789`).
+
+### 3. Configure Telegram Channel
+Edit the Moltbot config or `.env` file (created by the setup script):
+
+```bash
+sudo nano .env
+```
+Add:
+```bash
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token_here
+```
+
+Ensure Telegram is enabled in config (config file takes precedence over env vars if both exist):
+```json
+channels: {
+  telegram: {
+    enabled: true,
+    dmPolicy: "pairing"
+  }
+}
+```
+
+Restart Moltbot:
+```bash
+sudo docker compose restart
+```
+
+### 4. Pairing & First Login (Security Step)
+When you message the bot on Telegram for the first time:
+1.  Moltbot will generate a pairing code.
+2.  The bot will not respond until approved.
+
+List pairing requests:
+```bash
+sudo docker compose run --rm moltbot-cli pairing list telegram
+```
+
+Approve your Telegram account:
+```bash
+sudo docker compose run --rm moltbot-cli pairing approve telegram <PAIRING_CODE>
+```
+*This ensures only approved users can interact with Moltbot.*
+
+### 5. Optional: Expose Control UI via Nginx (Advanced)
+**Recommended default:** Do not expose Moltbot publicly. Telegram does not require inbound webhooks.
+
+If you **do** want UI access (for debugging), expose it securely.
+
+**Step 1: DNS Setup**
+*   Add **A Record**: `moltbot` -> `46.62.255.66`
+
+**Step 2: Nginx Config**
+```bash
+sudo nano /etc/nginx/sites-available/moltbot.sshub.dev
+```
+**Content:**
+```nginx
+server {
+    server_name moltbot.sshub.dev;
+
+    location / {
+        proxy_pass http://127.0.0.1:18789;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+```
+
+Enable and secure:
+```bash
+sudo ln -s /etc/nginx/sites-available/moltbot.sshub.dev /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+sudo certbot --nginx -d moltbot.sshub.dev
+```
+*Strongly recommended: protect this route with HTTP basic auth or restrict via VPN.*
+
+### 6. Monitoring (Optional)
+Add Moltbot to Uptime Kuma:
+*   **Type:** HTTP
+*   **URL:** `http://127.0.0.1:18789`
+*   Expect status `200`.
+
+---
+
+## Summary of URLs
+
+| Service | Subdomain (Example) | Description |
+| :--- | :--- | :--- |
+| **n8n** | `n8n.sshub.dev` | Automation Workflows |
+| **Trilium** | `notes.sshub.dev` | Knowledge Base |
+| **Uptime Kuma** | `status.sshub.dev` | Uptime Monitoring |
+| **Glances** | `monitor.sshub.dev` | System Stats |
+| **Portainer** | `portainer.sshub.dev` | Docker Management |
+| **Moltbot** | *(Telegram)* | AI Assistant (Self-hosted) |
+| **Moltbot UI** | `moltbot.sshub.dev` | Control UI (Optional) |
+| **Zoom Redirect** | `meet.sshub.dev` | Utility Shortlink |
+| **Shopify** | `shopify.sshub.dev` | Redirect to Dev Store |
