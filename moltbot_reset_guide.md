@@ -14,7 +14,7 @@ This guide will walk you through completely removing the existing Moltbot instal
 
 1.  **SSH into your server**:
     ```powershell
-    ssh -i "d:\!Python Applications\Hetzner Cloud Setup\id_hetzner_temp" sri@46.62.255.66
+    ssh -i "d:\!Python Applications\Hetzner Cloud Setup\id_hetzner_temp" sri@[SERVER_IP]
     ```
     *(Adjust the key path if you are running this from a different location, or just use your standard SSH command)*
 

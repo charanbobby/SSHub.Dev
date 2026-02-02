@@ -4,7 +4,7 @@
 
 **Login:**
 ```powershell
-ssh -i "$env:USERPROFILE\.ssh\id_hetzner" sri@46.62.255.66
+ssh -i "$env:USERPROFILE\.ssh\id_hetzner" sri@[SERVER_IP]
 ```
 
 **Maintenance & Updates:**
@@ -52,13 +52,13 @@ Get-Content "$env:USERPROFILE\.ssh\id_hetzner.pub" | Set-Clipboard
 
 ## 2. Connecting to the Server
 
-Connect to your server (IP: `46.62.255.66`) using the `root` user and your `id_hetzner` key.
+Connect to your server (IP: `[SERVER_IP]`) using the `root` user and your `id_hetzner` key.
 
 ```powershell
-ssh -i "$env:USERPROFILE\.ssh\id_hetzner" root@46.62.255.66
+ssh -i "$env:USERPROFILE\.ssh\id_hetzner" root@[SERVER_IP]
 ```
 ```powershell
-ssh -i "E:\!Python Applications\SSH\id_hetzner" root@46.62.255.66
+ssh -i "E:\!Python Applications\SSH\id_hetzner" root@[SERVER_IP]
 ```
 
 *Note: The command above works from any directory. If you are already in your `.ssh` folder, you can also use `-i .\id_hetzner`.*
@@ -96,7 +96,7 @@ chmod 644 /home/sri/.ssh/authorized_keys
 **Do not close your current root session yet.** Open a **new** terminal on your computer and try to log in as `sri`:
 
 ```powershell
-ssh -i "$env:USERPROFILE\.ssh\id_hetzner" sri@46.62.255.66
+ssh -i "$env:USERPROFILE\.ssh\id_hetzner" sri@[SERVER_IP]
 ```
 
 If the login works, you can (optional but recommended) disable root login for security.
@@ -157,7 +157,7 @@ sudo systemctl status nginx
 sudo ufw status
 ```
 
-Now, try visiting your IP address (`http://46.62.255.66`) in your browser. You should see the "Welcome to nginx!" page.
+Now, try visiting your IP address (`http://[SERVER_IP]`) in your browser. You should see the "Welcome to nginx!" page.
 
 ## 5. Docker Installation
 

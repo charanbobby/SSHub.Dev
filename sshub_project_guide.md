@@ -53,7 +53,7 @@ sudo systemctl start nginx
 *   Go to your Domain Registrar (where you bought sshub.dev).
 *   Add an **A Record**:
     *   Name: `n8n`
-    *   Content: `46.62.255.66` (Your VPS IP)
+    *   Content: `[SERVER_IP]` (Your VPS IP)
 
 ### 2. Create Docker Compose File
 We'll keep projects in `/opt`.
@@ -138,7 +138,7 @@ sudo certbot --nginx -d n8n.sshub.dev
 **Goal:** `shopify.sshub.dev` redirects to a real store or password page.
 
 ### 1. DNS Setup
-*   Add **A Record**: `shopify` -> `46.62.255.66`
+*   Add **A Record**: `shopify` -> `[SERVER_IP]`
 
 ### 2. Nginx Redirect Config
 ```bash
@@ -203,7 +203,7 @@ Below are detailed, step-by-step instructions (DNS, Docker, Nginx) for each app.
 **Goal:** Hierarchical note taking at `notes.sshub.dev`.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `notes` -> `46.62.255.66`
+*   Add **A Record**: `notes` -> `[SERVER_IP]`
 
 **Step 2: Docker Setup**
 ```bash
@@ -256,7 +256,7 @@ sudo certbot --nginx -d notes.sshub.dev
 **Goal:** Run monitoring at `status.sshub.dev`.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `status` -> `46.62.255.66`
+*   Add **A Record**: `status` -> `[SERVER_IP]`
 
 **Step 2: Docker Setup**
 ```bash
@@ -306,7 +306,7 @@ sudo certbot --nginx -d status.sshub.dev
 **Goal:** System stats at `monitor.sshub.dev`.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `monitor` -> `46.62.255.66`
+*   Add **A Record**: `monitor` -> `[SERVER_IP]`
 
 **Step 2: Docker Setup**
 ```bash
@@ -358,7 +358,7 @@ sudo certbot --nginx -d monitor.sshub.dev
 **Note:** Since we are already using Nginx on ports 80/443, we will run NPM on **alternate ports** internally and proxy to its Admin UI. This keeps your current setup safe.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `npm` -> `46.62.255.66`
+*   Add **A Record**: `npm` -> `[SERVER_IP]`
 
 **Step 2: Docker Setup**
 ```bash
@@ -411,7 +411,7 @@ sudo certbot --nginx -d npm.sshub.dev
 **Goal:** Docker Management at `portainer.sshub.dev`.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `portainer` -> `46.62.255.66`
+*   Add **A Record**: `portainer` -> `[SERVER_IP]`
 
 **Step 2: Docker Setup**
 ```bash
@@ -594,7 +594,7 @@ sudo docker compose run --rm moltbot-cli pairing approve telegram <PAIRING_CODE>
 If you **do** want UI access (for debugging), expose it securely.
 
 **Step 1: DNS Setup**
-*   Add **A Record**: `moltbot` -> `46.62.255.66`
+*   Add **A Record**: `moltbot` -> `[SERVER_IP]`
 
 **Step 2: Nginx Config**
 ```bash
