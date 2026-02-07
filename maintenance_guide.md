@@ -27,6 +27,7 @@ sudo apt autoremove -y
 To update apps like **n8n**, **Glances**, or **Portainer**, you need to "pull" the latest version and recreate the container.
 
 ### Fast Way (Individual App)
+
 ```bash
 cd /opt/<app-name>
 docker compose pull
@@ -35,6 +36,7 @@ docker compose up -d
 
 ### Pro-Tip: Update Everything at Once
 Navigate to `/opt` and run this loop to update all projects:
+
 ```bash
 for d in /opt/*/ ; do (cd "$d" && docker compose pull && docker compose up -d); done
 ```
@@ -44,19 +46,23 @@ for d in /opt/*/ ; do (cd "$d" && docker compose pull && docker compose up -d); 
 ## 3. SSL / Security Maintenance
 
 ### SSL Certificates (Certbot)
+
 Certbot automatically renews certificates. You can verify they are working:
+
 ```bash
 sudo certbot renew --dry-run
 ```
 
 ### Firewall (UFW)
 Check your open ports occasionally:
+
 ```bash
 sudo ufw status
 ```
 
 ### Brute Force Protection (Fail2Ban)
 See how many IPs have been banned for trying to guess your passwords:
+
 ```bash
 sudo fail2ban-client status sshd
 ```
@@ -68,14 +74,18 @@ sudo fail2ban-client status sshd
 Data for your apps is stored in `/opt/<app-name>/data` (or similar volumes).
 
 ### Manual Backup (Simple)
+
 To back up a specific app's data to your home directory:
+
 ```bash
 # Example for n8n
 sudo tar -czvf ~/n8n_backup_$(date +%F).tar.gz /opt/n8n/data
 ```
 
 ### Disaster Recovery
+
 If the server crashes, you only need:
+
 1. Your **Docker Compose files** (`/opt/*/docker-compose.yml`)
 2. Your **Data volumes** (`/opt/*/data`)
 
@@ -92,3 +102,38 @@ Run these commands to see if your server is healthy:
 - **Check Memory:** `free -h`
 - **Monitor Real-time:** `glances` (or visit `https://monitor.sshub.dev`)
 - **Container Status:** `docker ps`
+
+---
+
+## 6. Docker Cleanup (Disk Space Management)
+
+Over time, Docker can consume a lot of disk space with unused images, volumes, and networks.
+
+### Basic Cleanup (Safe)
+
+Removes stopped containers, unused networks, and "dangling" images (images without a tag).
+
+```bash
+docker system prune
+```
+
+### Deep Cleanup (Aggressive)
+
+Removes ALL unused images (not just dangling ones) and ALL unused volumes.
+
+> [!CAUTION]
+> This will delete all Docker volumes not used by at least one container. Ensure your important data is backed up or the container is running!
+
+```bash
+# This is the "everything" cleanup
+docker system prune -a --volumes
+```
+
+### Individual Cleanup Commands
+
+If you want to be more specific:
+
+- **Prune Volumes:** `docker volume prune` (Delete all unused volumes)
+- **Prune Images:** `docker image prune -a` (Delete all unused images)
+- **Prune Networks:** `docker network prune` (Delete all unused networks)
+

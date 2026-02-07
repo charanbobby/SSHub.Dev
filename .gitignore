@@ -3,6 +3,7 @@ id_hetzner_temp
 monitor_conf_temp.conf
 *.log
 .env
+.config
 
 # Windows specific
 Thumb.db
